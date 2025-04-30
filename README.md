@@ -11,12 +11,19 @@ A compact pipeline using YOLOv8 + Tesseract to detect and read license plates.
 
 ## Setup
 
+Ensure Tesseract Binary is Installed
+Ubuntu
+```bash
+sudo apt-get update
+sudo apt-get install -y tesseract-ocr libtesseract-dev
+```
+Create virtual-env
 ```bash
 python3.11 -m venv plate_env && source plate_env/bin/activate
 pip install --upgrade pip
 pip install \
   torch torchvision torchaudio --extra-index-url https://download.pytorch.org/whl/cpu \
-  ultralytics opencv-python pytesseract numpy==1.26.4
+  ultralytics opencv-python-headless pytesseract numpy==1.26.4
 ```
 
 ## Yolov8 Training
