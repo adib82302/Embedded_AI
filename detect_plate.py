@@ -1,9 +1,15 @@
+import os
 import cv2
 import pytesseract
 from ultralytics import YOLO
 
 # Load image and model
-image_path = "test_image.jpg"
+image_path = "test_images/3069000.jpg"
+OUT_DIR   = "outputs"
+
+# make sure output directory exists
+os.makedirs(OUT_DIR, exist_ok=True)
+
 model = YOLO("best.pt")
 img = cv2.imread(image_path)
 
@@ -13,9 +19,28 @@ if img is None:
 # Detect plates
 results = model(image_path)[0]
 
+annotated = img.copy()
+
 for i, box in enumerate(results.boxes):
     x1, y1, x2, y2 = map(int, box.xyxy[0])
+    conf = float(box.conf[0])
     plate_crop = img[y1:y2, x1:x2]
+
+    # 1) crop
+    plate_crop = img[y1:y2, x1:x2]
+
+    # 2) annotate full image
+    cv2.rectangle(annotated, (x1, y1), (x2, y2), (0,255,0), 2)
+    cv2.putText(
+        annotated,
+        f"{i+1}:{conf:.2f}",
+        (x1, y1-10),
+        cv2.FONT_HERSHEY_SIMPLEX,
+        0.8,
+        (0,255,0),
+        2,
+        cv2.LINE_AA
+    )
 
     # OCR preprocessing
     gray = cv2.cvtColor(plate_crop, cv2.COLOR_BGR2GRAY)
@@ -26,6 +51,11 @@ for i, box in enumerate(results.boxes):
     kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (3, 3))
     cleaned = cv2.morphologyEx(thresh, cv2.MORPH_CLOSE, kernel)
 
+    # save cropped preprocessed image
+    crop_path = os.path.join(OUT_DIR, f"plate_{i+1}.jpg")
+    cv2.imwrite(crop_path, cleaned)
+    print(f"Saved crop → {crop_path} (conf={conf:.2f})")
+    
     # Run OCR
     text = pytesseract.image_to_string(cleaned, config='--psm 7')
     text = text.strip()
@@ -34,3 +64,8 @@ for i, box in enumerate(results.boxes):
 
     if len(text) < 4:
         print("Plate may be obstructed or unreadable.")
+
+# save the annotated image
+annot_path = os.path.join(OUT_DIR, "annotated.jpg")
+cv2.imwrite(annot_path, annotated)
+print(f"Saved annotated image → {annot_path}")
