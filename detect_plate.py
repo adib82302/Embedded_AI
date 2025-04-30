@@ -10,13 +10,16 @@ OUT_DIR   = "outputs"
 # make sure output directory exists
 os.makedirs(OUT_DIR, exist_ok=True)
 
+print("load yolov8 model")
 model = YOLO("best.pt")
+print("model loaded.")
 img = cv2.imread(image_path)
 
 if img is None:
     raise ValueError("Image could not be loaded.")
 
 # Detect plates
+print("detecting license plate with yolov8 model")
 results = model(image_path)[0]
 
 annotated = img.copy()
