@@ -11,7 +11,7 @@ OUT_DIR   = "outputs"
 os.makedirs(OUT_DIR, exist_ok=True)
 
 print("load yolov8 model")
-model = YOLO("best.pt")
+model = YOLO("runs/detect/train/weights/best.pt")
 print("model loaded.")
 img = cv2.imread(image_path)
 
