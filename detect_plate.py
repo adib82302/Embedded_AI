@@ -6,7 +6,6 @@ from ultralytics import YOLO
 image_path = "test_image.jpg"
 model = YOLO("best.pt")
 img = cv2.imread(image_path)
-print("HELLOOO")
 
 if img is None:
     raise ValueError("Image could not be loaded.")
