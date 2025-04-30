@@ -11,8 +11,9 @@ A compact pipeline using YOLOv8 + Tesseract to detect and read license plates.
 
 ## Setup
 
-Ensure Tesseract Binary is Installed
-Ubuntu
+Ensure Tesseract binary is installed
+
+Ubuntu/Debian specific install
 ```bash
 sudo apt-get update
 sudo apt-get install -y tesseract-ocr libtesseract-dev
