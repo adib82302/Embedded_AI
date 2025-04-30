@@ -43,11 +43,14 @@ for i, box in enumerate(results.boxes):
     )
 
     # OCR preprocessing
+    # 1) grayscale
     gray = cv2.cvtColor(plate_crop, cv2.COLOR_BGR2GRAY)
-    resized = cv2.resize(gray, None, fx=2, fy=2, interpolation=cv2.INTER_CUBIC)
-    _, thresh = cv2.threshold(resized, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
+    # 2) slight Gaussian blur to smooth noise
+    blur = cv2.GaussianBlur(gray, (5, 5), 0)
+    # 3) Otsu's threshold to get a clean binary image
+    _, thresh = cv2.threshold(blur, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
 
-    # clean noise
+    # clean noise with morphology to close small gaps
     kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (3, 3))
     cleaned = cv2.morphologyEx(thresh, cv2.MORPH_CLOSE, kernel)
 
