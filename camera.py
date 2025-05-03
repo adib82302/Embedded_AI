@@ -1,6 +1,7 @@
 import cv2
 import subprocess
 import time
+from detect_plate import detect_plate
 
 # Open default camera (index 0 is more common on Windows)
 cap = cv2.VideoCapture(0)
@@ -30,7 +31,8 @@ while True:
         print(f"📸 Saved frame as {image_path}")
 
         # Call another Python script with image path
-        subprocess.run(["python", "detect_plate.py", image_path])
+        detect_plate(image_path)
+        #subprocess.run(["python", "detect_plate.py", image_path])
 
     elif key == ord('q'):
         break
