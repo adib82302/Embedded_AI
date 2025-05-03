@@ -1,26 +1,25 @@
 import cv2
 
-gst_pipeline = (
-    "v4l2src device=/dev/video0 ! "
-    "video/x-raw, width=640, height=480, framerate=30/1 ! "
-    "videoconvert ! appsink"
-)
+cap = cv2.VideoCapture(0)
 
-cap = cv2.VideoCapture(gst_pipeline, cv2.CAP_GSTREAMER)
+# Force MJPEG decoding
+cap.set(cv2.CAP_PROP_FOURCC, cv2.VideoWriter_fourcc(*'MJPG'))
+cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
+cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
 
 if not cap.isOpened():
-    print("❌ Unable to access the camera via GStreamer.")
+    print("❌ Camera could not be opened even with MJPEG fallback.")
     exit()
 
-print("✅ Camera opened successfully. Press 'q' to quit.")
+print("✅ Camera opened with MJPEG. Press 'q' to quit.")
 
 while True:
     ret, frame = cap.read()
     if not ret:
-        print("❌ Failed to grab frame.")
+        print("❌ Failed to grab frame (MJPEG).")
         break
 
-    cv2.imshow("Jetson Nano Camera Feed", frame)
+    cv2.imshow("Jetson MJPEG Camera Feed", frame)
 
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
