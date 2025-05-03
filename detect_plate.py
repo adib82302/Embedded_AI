@@ -1,10 +1,15 @@
 import os
 import cv2
 import pytesseract
+import argparse
 from ultralytics import YOLO
 
+parser = argparse.ArgumentParser(description="Detect license plate from image.")
+parser.add_argument("image_path", type=str, help="Path to input image")
+args = parser.parse_args()
+image_path = args.image_path
 # Load image and model
-image_path = "test_images/3069000.jpg"
+#image_path = "test_images/3069000.jpg"
 OUT_DIR   = "outputs"
 
 # make sure output directory exists
