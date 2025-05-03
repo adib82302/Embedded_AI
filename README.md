@@ -26,6 +26,7 @@ pip install \
   torch torchvision torchaudio --extra-index-url https://download.pytorch.org/whl/cpu \
   ultralytics opencv-python-headless pytesseract numpy==1.26.4
 ```
+*Note: `python>=3.8`
 
 ## Yolov8 Training
 
