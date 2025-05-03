@@ -1,25 +1,25 @@
 import cv2
 
-cap = cv2.VideoCapture(0)
+cap = cv2.VideoCapture(1)  # ← YUYV interface
 
-# Force MJPEG decoding
-cap.set(cv2.CAP_PROP_FOURCC, cv2.VideoWriter_fourcc(*'MJPG'))
+# Request raw YUYV mode at 640x480
+cap.set(cv2.CAP_PROP_FOURCC, cv2.VideoWriter_fourcc(*'YUYV'))
 cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
 cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
 
 if not cap.isOpened():
-    print("❌ Camera could not be opened even with MJPEG fallback.")
+    print("❌ Could not open /dev/video1 (YUYV).")
     exit()
 
-print("✅ Camera opened with MJPEG. Press 'q' to quit.")
+print("✅ /dev/video1 opened successfully. Press 'q' to quit.")
 
 while True:
     ret, frame = cap.read()
     if not ret:
-        print("❌ Failed to grab frame (MJPEG).")
+        print("❌ Failed to grab frame.")
         break
 
-    cv2.imshow("Jetson MJPEG Camera Feed", frame)
+    cv2.imshow("YUYV Camera Feed", frame)
 
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
