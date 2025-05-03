@@ -20,7 +20,7 @@ sudo apt-get install -y tesseract-ocr libtesseract-dev libgl1-mesa-glx libglib2.
 ```
 Create virtual-env
 ```bash
-python3.11 -m venv plate_env && source plate_env/bin/activate
+python3 -m venv plate_env && source plate_env/bin/activate
 pip install --upgrade pip
 pip install \
   torch torchvision torchaudio --extra-index-url https://download.pytorch.org/whl/cpu \
