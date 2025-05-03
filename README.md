@@ -24,7 +24,7 @@ python3 -m venv plate_env && source plate_env/bin/activate
 pip install --upgrade pip
 pip install \
   torch torchvision torchaudio --extra-index-url https://download.pytorch.org/whl/cpu \
-  ultralytics opencv-python-headless pytesseract numpy==1.26.4
+  ultralytics opencv-python-headless pytesseract numpy
 ```
 *Note: `python>=3.8`
 
