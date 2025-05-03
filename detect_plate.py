@@ -1,3 +1,4 @@
+import sys
 import os
 import cv2
 import pytesseract
@@ -5,6 +6,11 @@ import argparse
 from ultralytics import YOLO
 
 def detect_plate(image_path):
+    output_file = open('outputs/output.txt', 'w')
+
+    # Redirect stdout to the file
+    sys.stdout = output_file
+
     # Load image and model
     #image_path = "test_images/3069000.jpg"
     OUT_DIR   = "outputs"
@@ -77,6 +83,10 @@ def detect_plate(image_path):
     annot_path = os.path.join(OUT_DIR, "annotated.jpg")
     cv2.imwrite(annot_path, annotated)
     print(f"Saved annotated image → {annot_path}")
+
+    output_file.close()
+    sys.stdout = sys.__stdout__  # Reset stdout to default
+    print("Output saved to outputs/output.txt")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Detect license plate from image.")
