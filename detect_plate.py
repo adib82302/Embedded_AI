@@ -5,15 +5,12 @@ import pytesseract
 import argparse
 from ultralytics import YOLO
 
+OUT_DIR = "outputs"
+
 def detect_plate(image_path):
-    output_file = open('outputs/output.txt', 'w')
-
     # Redirect stdout to the file
+    output_file = open(f"{OUT_DIR}/output.txt", 'w')
     sys.stdout = output_file
-
-    # Load image and model
-    #image_path = "test_images/3069000.jpg"
-    OUT_DIR   = "outputs"
 
     # make sure output directory exists
     os.makedirs(OUT_DIR, exist_ok=True)
@@ -32,15 +29,16 @@ def detect_plate(image_path):
 
     annotated = img.copy()
 
+    # Process detected plates
     for i, box in enumerate(results.boxes):
         x1, y1, x2, y2 = map(int, box.xyxy[0])
         conf = float(box.conf[0])
         plate_crop = img[y1:y2, x1:x2]
 
-        # 1) crop
+        # crop
         plate_crop = img[y1:y2, x1:x2]
 
-        # 2) annotate full image
+        # save full annotated image
         cv2.rectangle(annotated, (x1, y1), (x2, y2), (0,255,0), 2)
         cv2.putText(
             annotated,
@@ -54,11 +52,11 @@ def detect_plate(image_path):
         )
 
         # OCR preprocessing
-        # 1) grayscale
+        # grayscale
         gray = cv2.cvtColor(plate_crop, cv2.COLOR_BGR2GRAY)
-        # 2) slight Gaussian blur to smooth noise
+        # slight Gaussian blur to smooth noise
         blur = cv2.GaussianBlur(gray, (5, 5), 0)
-        # 3) Otsu's threshold to get a clean binary image
+        # Otsu's threshold to get a clean binary image
         _, thresh = cv2.threshold(blur, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
 
         # clean noise with morphology to close small gaps
@@ -76,6 +74,7 @@ def detect_plate(image_path):
 
         print(f"[Plate {i+1}] OCR Result: '{text}'")
 
+        # not enough chars if obstructed
         if len(text) < 4:
             print("Plate may be obstructed or unreadable.")
 
